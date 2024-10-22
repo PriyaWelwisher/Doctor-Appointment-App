@@ -1,33 +1,34 @@
-const express = require ("express");
-const colors = require ("colors");
-const morgan = require ("morgan");
-const configDotenv = require ("dotenv");
+const express = require("express");
+const colors = require("colors");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+const userRouters = require("./routes/userRoutes"); // Ensure you're correctly importing this
+const cors = require('cors');
 
-//dotenv config
+// dotenv config
+dotenv.config();
 
-configDotenv.config();
-//rest object
+// MongoDB connection
+connectDB();
 
+// rest object
 const app = express();
 
-//middlewares
+// middlewares
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(cors());
 
-//routes
-app.get ("/", (req,res) => {
-    res.status(200).send({
-        message: "server running sucessfully",
-    });
-});
+// routes
+app.use("/api/v1/user", userRouters);  // Use userRouters directly
 
-//PORT
+// PORT
 const port = process.env.PORT || 8080;
 
-//liston port
-
+// Listen to port
 app.listen(port, () => {
-    console.log(`Server Running in ${process.env.NODE_MODE} mode on port ${process.env.PORT}`.bgCyan.bgYellow
-
+    console.log(
+        `Server Running in ${process.env.NODE_MODE} mode on port ${port}`.bgCyan.bgYellow
     );
-})
+});
